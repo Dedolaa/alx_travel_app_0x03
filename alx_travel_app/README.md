@@ -1,16 +1,34 @@
-# alx_travel_app_0x00
+# ALX Travel App 0x02 — Chapa API Payment Integration
 
-## Overview
-This is a Django-based travel app that supports listings, bookings, and reviews. The app includes database seeding and RESTful API representation.
+## 📌 Project Overview
+This project extends the functionality of `alx_travel_app_0x01` by integrating **Chapa API** to handle secure online payments for bookings.  
+It allows users to:
+- Initiate payments
+- Redirect to Chapa checkout
+- Verify payment status
+- Update payment records in the database
+- Handle failed payments gracefully
 
-## Features
-- Listings: Accommodation details
-- Bookings: Reservation information
-- Reviews: User feedback
-- Database seeding command
+---
 
-## Project Setup
+## 🚀 Features
+- **Payment Initiation**: Creates a Chapa transaction and returns a checkout link.
+- **Payment Verification**: Confirms payment status from Chapa and updates the database.
+- **Booking Workflow Integration**: Initiates payment after booking creation.
+- **Status Tracking**: Payment records stored in the `Payment` model.
+- **Sandbox Testing**: Fully functional with Chapa sandbox environment.
+- **Secure Credentials**: API keys stored in `.env` file.
 
-1. Install requirements:
-```bash
-pip install -r requirements.txt
+---
+
+## 🛠️ Tech Stack
+- Python 3.10+
+- Django 4.x
+- Django REST Framework
+- Chapa API
+- Requests library
+- python-dotenv for environment variables
+
+---
+
+## 📂 Project Structure

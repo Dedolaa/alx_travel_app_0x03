@@ -1,5 +1,13 @@
 import environ
 import os
+from dotenv import load_dotenv  # type: ignore
+
+# Load environment variables from .env
+load_dotenv()
+
+CHAPA_SECRET_KEY = os.getenv('CHAPA_SECRET_KEY')
+CHAPA_BASE_URL = os.getenv('CHAPA_BASE_URL', 'https://api.chapa.co/v1')
+
 
 # Initialize environment variables
 env = environ.Env()
@@ -152,3 +160,6 @@ REST_FRAMEWORK = {
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
+
+CHAPA_SECRET_KEY = os.getenv('CHAPA_SECRET_KEY')
+CHAPA_BASE_URL = os.getenv('CHAPA_BASE_URL', 'https://api.chapa.co/v1')
