@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .models import Listing, Booking
 from .serializers import ListingSerializer, BookingSerializer
 from rest_framework import request
@@ -8,6 +8,8 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Payment
+from .tasks import send_booking_confirmation_email  
+
 
 class ListingViewSet(viewsets.ModelViewSet):
     queryset = Listing.objects.all()
@@ -76,3 +78,28 @@ class VerifyPaymentView(APIView):
         payment.save()
 
         return Response({"payment_status": payment.status})
+
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        
+        # Get the booking instance
+        booking = serializer.instance
+        
+        # Trigger the email task asynchronously
+        send_booking_confirmation_email.delay(
+            booking_id=booking.id,
+            user_email=booking.user.email,
+            listing_title=booking.listing.title,
+            check_in_date=booking.check_in_date.strftime('%Y-%m-%d'),
+            check_out_date=booking.check_out_date.strftime('%Y-%m-%d')
+        )
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
